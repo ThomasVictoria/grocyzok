@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grocy
+  labels:
+    {{- include "elzokalo-grocy.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: grocy
+  template:
+    metadata:
+      labels:
+        name: grocy
+    spec:
+      containers:
+        - name: grocy
+          imagePullPolicy: Always
+          image: linuxserver/grocy:latest
+          ports:
+            - containerPort: 9283
+          volumeMounts:
+            - name: db
+              mountPath: /var/www/data
+              subPath: app
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Europe/Paris"
+            - name: GROCY_DEFAULT_LOCALE
+              value: "fr"
+            - name: GROCY_CALENDAR_FIRST_DAY_OF_WEEK
+              value: "1"
+            - name: GROCY_CURRENCY
+              value: EUR
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: grocy

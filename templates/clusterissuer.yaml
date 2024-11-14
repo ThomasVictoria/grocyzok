@@ -1,0 +1,38 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+  labels:
+    {{- include "elzokalo-grocy.labels" . | nindent 4 }}
+  {{- with .Values.serviceAccount.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: vtom.pro@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+      - dns01:
+          route53:
+            region: eu-west-3
+            accessKeyIDSecretRef: 
+              name: dns-secrets
+              key: AWS_ACCESS_KEY_DNS
+            hostedZoneID: Z03266062405C2D8QB818
+            secretAccessKeySecretRef:
+              name: dns-secrets
+              key: AWS_SECRET_KEY_DNS
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: dns-secrets
+  namespace: cert-manager
+  labels:
+{{ include "elzokalo-grocy.labels" . | indent 4 }}
+data:
+  AWS_SECRET_KEY_DNS: {{ "" | b64enc }}
+  AWS_ACCESS_KEY_DNS: {{ "" | b64enc }}

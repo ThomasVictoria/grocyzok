@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cochonnet.fr
+spec:
+  secretName: cochonnet
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "stock.cochonnet.fr"
+  dnsNames:
+    - "stock.cochonnet.fr"

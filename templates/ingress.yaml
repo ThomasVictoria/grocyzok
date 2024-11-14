@@ -1,0 +1,36 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ template "elzokalo-grocy.fullname" . }}-tls-grocy
+  labels:
+{{ include "elzokalo-grocy.labels" . | indent 4 }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`stock.cochonnet.fr`)
+      kind: Rule
+      priority: 10
+      services:
+        - name: grocy
+          port: 80
+  tls:
+    secretName: cochonnet
+
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ template "elzokalo-grocy.fullname" . }}-grocy
+  labels:
+{{ include "elzokalo-grocy.labels" . | indent 4 }}
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`stock.cochonnet.fr`)
+      kind: Rule
+      priority: 10
+      services:
+        - name: grocy
+          port: 80
