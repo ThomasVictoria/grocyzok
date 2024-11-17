@@ -25,7 +25,7 @@ spec:
             - name: "backup"
               image: amazon/aws-cli:2.19.5
               imagePullPolicy: Always
-              command: ["s3", "sync", "/var/www/data", "s3://elzokalo-grocy-backup/{{ now }}"]
+              command: ["aws", "s3", "sync", "/var/www/data", "s3://elzokalo-grocy-backup/{{ now }}"]
               volumeMounts:
                 - name: db
                   mountPath: /var/www/data
