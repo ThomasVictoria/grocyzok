@@ -28,7 +28,7 @@ spec:
           volumeMounts:
             - name: db
               mountPath: /var/www/data
-              subPath: app
+              subpath: app
           resources:
             limits:
               memory: "512Mi"
